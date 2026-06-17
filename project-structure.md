@@ -24,6 +24,13 @@ templates/                 # Document templates for feature areas
 ├── design.md
 ├── tasks.md
 └── dev-notes.md
+
+Issues/                    # Bug ticket management
+├── index.md               # Ticket list and state legend
+├── templates/
+│   └── BUG-template.md
+└── tickets/
+    └── BUG-{NNN}.md        # Added sequentially as bugs are reported
 ```
 
 ---
@@ -68,3 +75,7 @@ templates/                 # Document templates for feature areas
 - **Deviations from Design**: Differences from the design document and reasons
 - **Future Work**: Current limitations and items to address later
 - **Requests to User**: Recorded when skills, permissions, or information are lacking
+
+### Bug ticket (Issues/tickets/BUG-{NNN}.md)
+
+Created following `Issues/templates/BUG-template.md`.
