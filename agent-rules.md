@@ -59,15 +59,15 @@ Split if any of the following apply:
 ## Bug Ticket Workflow
 
 ### When a bug is reported
-1. Assign the next available ID by checking the highest existing number in `Issues/tickets/`
-2. Create `Issues/tickets/BUG-{NNN}.md` using `Issues/templates/BUG-template.md`
-3. Add a row to `Issues/index.md` with state `Open`
+1. Assign the next available ID by checking the highest existing number in `issues/tickets/`
+2. Create `issues/tickets/BUG-{NNN}.md` using `issues/templates/BUG-template.md`
+3. Add a row to `issues/index.md` with state `Open`
 4. Investigate the cause, then fix the code
 5. Update the ticket with the cause, fix details, and relevant commit hash; change state to `Fixed`
 6. Commit the ticket file together with (or immediately after) the fix commit
 
 ### Rules
-- All bug tickets go in `Issues/tickets/` — never in feature-area `tasks.md` or `dev-notes.md`
+- All bug tickets go in `issues/tickets/` — never in feature-area `tasks.md` or `dev-notes.md`
 - One ticket per distinct root cause; link related tickets if they share a cause
 - Do not close a ticket as `Closed` without user confirmation that the fix was verified
 
