@@ -9,7 +9,8 @@
 set -u
 
 PROJECT_DIR="$PWD"
-TEMPLATE="$PROJECT_DIR/templates/verify-request.md"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATE="$SCRIPT_DIR/template.md"
 OUT_DIR="$PROJECT_DIR/tmp/確認"
 FB_OLD="$PROJECT_DIR/tmp/フィードバック/old"
 TODAY=$(date +%F)

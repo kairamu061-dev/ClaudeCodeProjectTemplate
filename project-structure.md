@@ -18,14 +18,13 @@ docs/
     └── {sub-item}/        # Created as needed per split rules
         └── ...
 
-templates/                 # Document templates
+templates/                 # Document templates (all copied by /add-feature)
 ├── overview.md
 ├── spec.md
 ├── design.md
 ├── tasks.md
 ├── test-cases.md
-├── dev-notes.md
-└── verify-request.md      # Verification request (used by /verify-request)
+└── dev-notes.md
 
 issues/                    # Bug ticket management
 ├── index.md               # Ticket list and state legend
@@ -104,7 +103,8 @@ tmp/                       # Not committed. Working area
 - Keep a **"how we verify"** section here. The verification method compounds faster than
   the code does, and is the part most worth carrying to the next project
 
-### verify-request.md
+### Verification request (.claude/skills/verify-request/template.md)
+- Lives inside the skill, not in `templates/`, so `/add-feature` does not copy it
 - Header's artifact table is **generated**, never typed
 - **測ったこと / 推測していること** — unmarked claims are not allowed
 - A **対照** column per item, a table of every `0` expectation and its control,
