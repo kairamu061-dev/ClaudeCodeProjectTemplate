@@ -49,7 +49,7 @@ tmp/                       # Not committed. Working area
 | Skill | Use |
 |---|---|
 | `/add-feature <path>` | Create a feature area or sub-item: directory, templates, index.md row |
-| `/verify-request <title>` | Generate a verification request. **Measures the CI artifacts itself** (sizes, SHA256) so they cannot be mis-transcribed, warns on a dirty tree or a HEAD that differs from the run, and carries over the previous round's open items |
+| `/verify-request <title> [--run <id>] [--workflow <name>]` | Generate a verification request. **Measures the CI artifacts itself** (sizes, SHA256) so they cannot be mis-transcribed, warns on a dirty tree or a HEAD that differs from the run, and carries over the previous round's open items. Without `--run`, picks the latest green run on the current branch. Requires `gh`, `git`, `awk` |
 
 ---
 

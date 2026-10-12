@@ -5,7 +5,7 @@
 # 依頼書の数字を手で写して間違える、という事故を構造的に消すのが目的
 # （実績: 大きさ 2 回・スタートメニューのパス 1 回、間違えた）。
 #
-# 使い方: ./verify-request.sh <題名> [--run <run_id>]
+# 使い方: ./verify-request.sh <題名> [--run <run_id>] [--workflow <名前>]
 set -u
 
 PROJECT_DIR="$PWD"
@@ -17,16 +17,20 @@ TODAY=$(date +%F)
 
 TITLE="${1:-}"
 if [ -z "$TITLE" ] || [ "${TITLE#--}" != "$TITLE" ]; then
-  echo "使い方: $0 <題名> [--run <run_id>]"
+  echo "使い方: $0 <題名> [--run <run_id>] [--workflow <名前>]"
   echo "例:     $0 アイコンの非同期化"
   exit 1
 fi
 shift
 
-RUN_ID=""
+RUN_ID=""; WORKFLOW=""
 while [ $# -gt 0 ]; do
   case "$1" in
-    --run) RUN_ID="${2:-}"; shift 2 ;;
+    --run|--workflow)
+      # 値が無いと shift 2 が失敗して引数が減らず、無限ループになる
+      [ $# -ge 2 ] || { echo "エラー: $1 に値が無い"; exit 1; }
+      [ "$1" = "--run" ] && RUN_ID="$2" || WORKFLOW="$2"
+      shift 2 ;;
     *) echo "不明な引数: $1"; exit 1 ;;
   esac
 done
@@ -43,27 +47,33 @@ if ! command -v gh >/dev/null 2>&1; then
   RUN_ID="★要取得"; SHA="★要取得"
 else
   if [ -z "$RUN_ID" ]; then
-    RUN_ID=$(gh run list --limit 20 \
-      --json databaseId,conclusion,headSha \
-      --jq '[.[]|select(.conclusion=="success")][0].databaseId' 2>/dev/null || true)
+    # 別ブランチや別ワークフローの run を拾わないよう、現在のブランチ（と指定があればワークフロー）に絞る
+    BRANCH=$(git branch --show-current 2>/dev/null || true)
+    LIST_ARGS=(--limit 20 --status success --json databaseId)
+    [ -n "$BRANCH" ] && LIST_ARGS+=(--branch "$BRANCH")
+    [ -n "$WORKFLOW" ] && LIST_ARGS+=(--workflow "$WORKFLOW")
+    RUN_ID=$(gh run list "${LIST_ARGS[@]}" --jq '.[0].databaseId' 2>/dev/null || true)
   fi
   if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
-    need "緑の run が見つからない。CI が通ってから出すこと"
+    need "緑の run が見つからない（ブランチ: ${BRANCH:-不明}）。CI が通ってから出すこと"
     RUN_ID="★要取得"; SHA="★要取得"
   else
-    SHA=$(gh run view "$RUN_ID" --json headSha --jq '.headSha' 2>/dev/null | cut -c1-7)
-    [ -n "$SHA" ] || { SHA="★要取得"; need "headSha が取れなかった"; }
+    FULL_SHA=$(gh run view "$RUN_ID" --json headSha --jq '.headSha' 2>/dev/null || true)
+    if [ -n "$FULL_SHA" ]; then SHA=$(printf '%s' "$FULL_SHA" | cut -c1-7)
+    else SHA="★要取得"; need "headSha が取れなかった"; fi
   fi
 fi
 
 # --- 未 push の変更が無いか（依頼書の対象がローカルとずれるのを防ぐ） ----
 if command -v git >/dev/null 2>&1; then
-  if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+  # tmp/ はこのスクリプト自身が書き出す場所なので、汚れの判定から外す
+  if [ -n "$(git status --porcelain -- . ':(exclude)tmp' 2>/dev/null)" ]; then
     need "作業ツリーが汚れている。★ 依頼書の対象コミットと手元が違う状態で出すと、結果が読めない"
   fi
-  LOCAL_SHA=$(git rev-parse --short HEAD 2>/dev/null || true)
-  if [ -n "$LOCAL_SHA" ] && [ "$SHA" != "★要取得" ] && [ "$LOCAL_SHA" != "$SHA" ]; then
-    need "手元の HEAD は $LOCAL_SHA で、run の headSha は $SHA。★ 文書だけのコミットが載っているなら「実行ファイルは変わりません」と明記する"
+  # 短縮 SHA は桁数が環境で変わるので、全桁で比べる
+  LOCAL_SHA=$(git rev-parse HEAD 2>/dev/null || true)
+  if [ -n "$LOCAL_SHA" ] && [ -n "${FULL_SHA:-}" ] && [ "$LOCAL_SHA" != "$FULL_SHA" ]; then
+    need "手元の HEAD は $(printf '%s' "$LOCAL_SHA" | cut -c1-7) で、run の headSha は $SHA。★ 文書だけのコミットが載っているなら「実行ファイルは変わりません」と明記する"
   fi
 fi
 
@@ -118,17 +128,25 @@ if [ -e "$OUT" ]; then
   exit 1
 fi
 
-python3 - "$TEMPLATE" "$OUT" "$TITLE" "$TODAY" "$SHA" "$RUN_ID" "$TABLE" "$PREV" "$CARRY" <<'PY'
-import sys, pathlib
-tpl, out, title, today, sha, run, table, prev, carry = sys.argv[1:10]
-s = pathlib.Path(tpl).read_text(encoding='utf-8')
-s = s.replace('{題名}', title).replace('{日付}', today)
-s = s.replace('{SHA}', sha).replace('{RUN_ID}', run)
-s = s.replace('{成果物表}', table.lstrip('\n'))
-s = s.replace('- 前回フィードバック: {パス}', f'- 前回フィードバック: {prev}')
-s = s.replace('{持ち越し}', carry)
-pathlib.Path(out).write_text(s, encoding='utf-8')
-PY
+# 値は環境変数で渡す（awk -v はバックスラッシュを解釈してしまう）。
+# 置換は正規表現ではなく文字列一致で行う。値に & や \ が含まれても壊れない
+V_TITLE="$TITLE" V_TODAY="$TODAY" V_SHA="$SHA" V_RUN="$RUN_ID" \
+V_TABLE="${TABLE#$'\n'}" V_PREV="$PREV" V_CARRY="$CARRY" \
+awk '
+function rep(s, from, to,    out, i) {
+  out = ""
+  while ((i = index(s, from)) > 0) { out = out substr(s, 1, i - 1) to; s = substr(s, i + length(from)) }
+  return out s
+}
+{
+  s = $0
+  s = rep(s, "{題名}", ENVIRON["V_TITLE"]);   s = rep(s, "{日付}", ENVIRON["V_TODAY"])
+  s = rep(s, "{SHA}", ENVIRON["V_SHA"]);      s = rep(s, "{RUN_ID}", ENVIRON["V_RUN"])
+  s = rep(s, "{成果物表}", ENVIRON["V_TABLE"])
+  s = rep(s, "- 前回フィードバック: {パス}", "- 前回フィードバック: " ENVIRON["V_PREV"])
+  s = rep(s, "{持ち越し}", ENVIRON["V_CARRY"])
+  print s
+}' "$TEMPLATE" > "$OUT"
 
 echo "作成: ${OUT#$PROJECT_DIR/}"
 echo

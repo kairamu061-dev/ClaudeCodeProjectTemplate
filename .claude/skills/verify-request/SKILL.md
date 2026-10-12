@@ -1,7 +1,7 @@
 ---
 name: verify-request
 description: Generate a verification request document for the real-hardware verification session. Use when a change is pushed, CI is green, and behaviour needs confirming on the target OS. Measures the CI artifacts itself so sizes and hashes cannot be mis-transcribed.
-argument-hint: <title> (e.g. アイコンの非同期化) [--run <id>]
+argument-hint: <title> (e.g. アイコンの非同期化) [--run <id>] [--workflow <name>]
 allowed-tools: Bash
 ---
 
