@@ -12,7 +12,8 @@ bash "${CLAUDE_SKILL_DIR}/verify-request.sh" $ARGUMENTS
 ```
 
 Then open the generated file and fill it in. **Do not edit the 成果物 table** — it was
-measured from the artifacts. Every other section is yours to write.
+measured from the artifacts. **Do not edit 報告の書式 either** — its 未了・判定できなかった項目
+heading is what the next run reads to carry items over. Every other section is yours to write.
 
 Before reporting done, check all four:
 

@@ -109,6 +109,8 @@ tmp/                       # Not committed. Working area
 - **測ったこと / 推測していること** — unmarked claims are not allowed
 - A **対照** column per item, a table of every `0` expectation and its control,
   and a section listing items that have no control at all
+- Ends with 報告の書式, the format the verification session replies in (no separate
+  feedback template — the verification session may not have this repository)
 
 ### docs/testing.md
 - The line drawn on day one: what runs in CI without the target environment,

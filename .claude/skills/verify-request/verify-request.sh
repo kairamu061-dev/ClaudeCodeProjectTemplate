@@ -116,7 +116,9 @@ if [ -d "$FB_OLD" ]; then
   LAST=$(ls -t "$FB_OLD"/*.md 2>/dev/null | head -1 || true)
   if [ -n "${LAST:-}" ]; then
     PREV="\`tmp/フィードバック/old/$(basename "$LAST")\`"
-    C=$(sed -n '/^## *前回からの持ち越し/,$p' "$LAST" | tail -n +2 | sed '/^$/d' || true)
+    # 見出しは template.md「報告の書式」で決めてある。次の見出しの手前まで、コメント行は除いて取る
+    C=$(awk '/^## /{on = ($0 ~ /^## *未了・判定できなかった項目/); next} on' "$LAST" \
+          | sed -e '/^<!--.*-->$/d' -e '/^$/d' || true)
     [ -n "$C" ] && CARRY="$C"
   fi
 fi

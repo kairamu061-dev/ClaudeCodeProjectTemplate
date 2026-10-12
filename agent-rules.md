@@ -97,7 +97,9 @@ tmp/確認/old/, tmp/フィードバック/old/   archive after each round
    — it measures the artifacts itself so the numbers cannot be mis-transcribed
 3. Fill in the items, naming the negative control for each
 4. When feedback arrives: fix what is reported, update tickets and test-cases,
-   archive both documents to `old/`, then start the next round
+   archive both documents to `old/`, then start the next round. The verification session
+   replies in the 報告の書式 embedded at the end of each request; its 未了・判定できなかった項目
+   section is carried into the next request automatically
 
 ### Rules for request documents
 
