@@ -88,9 +88,9 @@ tmp/                       # Not committed. Working area
 - **Status**: Todo / In progress / Done
 
 ### test-cases.md
-- **Manual** procedures, not automated tests (`tests/` holds those)
-- Every row in spec.md's feature list must have at least one row here —
-  a feature with no test case is invisible to a port/rewrite coverage table
+- Every row in spec.md's feature list names its test-case IDs in the テストケース column,
+  or says 「無し」 explicitly. An empty cell is an oversight; 「無し」 is a decision —
+  and a feature with an empty cell is invisible to a port/rewrite coverage table
 - E2E rows carry a **対照 (control)** column. Where no control exists, say so:
   an item that cannot fail cannot be evidence
 

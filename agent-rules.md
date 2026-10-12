@@ -8,7 +8,8 @@ When given an implementation task, follow these rules to prepare documentation b
 ## Workflow
 
 ### Starting a new feature
-1. Create `docs/project_overview.md`, `docs/glossary.md`, and `docs/tags.md` if they do not exist
+1. Create `docs/project_overview.md`, `docs/glossary.md`, and `docs/tags.md` if they do not exist,
+   and fill in `docs/testing.md` before the first implementation (see "Automated Tests")
 2. Run `/add-feature <feature-area>` to set up the directory, templates, and index.md at once
 3. Write content in order: overview.md → spec.md → design.md
 4. After writing spec.md, evaluate whether subdivision is needed per the split rules
@@ -151,8 +152,6 @@ tested without the target OS or hardware, and put those tests in CI from the fir
 - Put the test step **before** the publish/package step so a failure stops the artifact
 - Record the line in `docs/testing.md`: what is covered, what needs the target
   environment and therefore stays in the manual verification loop, and why
-- `docs/**/test-cases.md` are **manual** procedures. They are not automated tests and must
-  never be counted as such
 
 ---
 
