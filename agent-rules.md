@@ -61,11 +61,53 @@ Split if any of the following apply:
 
 ### When a bug is reported
 1. Assign the next available ID by checking the highest existing number in `issues/tickets/`
-2. Create `issues/tickets/BUG-{NNN}.md` using `issues/templates/BUG-template.md`
+2. Create `issues/tickets/BUG-{NNN}.md` using `issues/templates/BUG-template.md`,
+   and set the **rank** from the symptom (see "Bug Rank")
 3. Add a row to `issues/index.md` with state `Open`
-4. Investigate the cause, then fix the code
-5. Update the ticket with the cause, fix details, and relevant commit hash; change state to `Fixed`
-6. Commit the ticket file together with (or immediately after) the fix commit
+4. Investigate the cause. **Do not start fixing yet**
+5. Set the **type** from the cause (see "Bug Type"). Revise the rank if the investigation
+   showed the symptom is worse or milder than reported
+6. Decide whether to fix now (see "Fix Decision")
+   - Fix now → go to step 7
+   - User decision → fill in 修正の影響 in the ticket, set state `Awaiting Decision`, and ask
+     the user. Proceed to step 7 only if they choose to fix; otherwise set `Won't Fix` and
+     record the reason
+7. Fix the code. Update the ticket with the cause, fix details, and relevant commit hash;
+   change state to `Fixed`
+8. Commit the ticket file together with (or immediately after) the fix commit
+
+### Bug Rank
+
+Assigned from the **symptom** — what the user experiences. When in doubt, take the higher rank.
+
+| Rank | Meaning | Examples |
+|---|---|---|
+| **S** | Severe | Cannot proceed, crash, data corruption |
+| **A** | Operation is impaired | Rolled back by an error, an effect does not apply, a button does nothing |
+| **B** | Obviously wrong at a glance | A different effect is invoked, a blank screen appears, the layout breaks, a value is wrong |
+| **C** | Minor | A transition takes longer than expected, the screen flickers, text overflows |
+
+### Bug Type
+
+Assigned from the **cause**, after investigation. If the cause is still 推測 (inferred),
+mark the type as provisional.
+
+| Type | Meaning |
+|---|---|
+| **通常** (logic) | A logic mistake: a path that should run does not, a true/false condition is inverted |
+| **例外** (exception) | Behaviour the spec did not anticipate, which the normal mechanism cannot absorb and needs exception handling |
+| **競合** (race / interaction) | Each part behaves as specified, but their combination or timing surfaces as a bug |
+| **仕様** (spec) | The code follows the spec, but the spec itself is wrong or ambiguous. Update `spec.md` along with the code |
+| **外部** (external) | The defect is in a library, the OS, or an external API. The fix is a workaround on our side; record the upstream issue in the ticket |
+| **その他** (other) | None of the above. Say in the ticket why it fits none |
+
+### Fix Decision
+
+- **Fix now** if **any** of the following holds: rank **S**, rank **A**, or type **通常**
+- **Otherwise the user decides.** Before asking, fill in 修正の影響 in the ticket:
+  what the fix changes, what else it could break, other features it touches,
+  rough effort, and what happens if it is left unfixed. Do not start the fix while
+  the ticket is `Awaiting Decision`
 
 ### Rules
 - All bug tickets go in `issues/tickets/` — never in feature-area `tasks.md` or `dev-notes.md`

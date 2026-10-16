@@ -3,6 +3,8 @@
 - **State**: Open
 - **Reported**: {YYYY-MM-DD}（{who found it — user / verification session / code review / self}）
 - **Area**: {affected feature area / file}
+- **Rank**: {S / A / B / C}（set from the symptom when the ticket is created）
+- **Type**: {通常 / 例外 / 競合 / 仕様 / 外部 / その他}（set from the cause after investigation; add「暫定」if the cause is still inferred）
 
 ## Summary
 
@@ -36,6 +38,26 @@ What should happen instead.
 ## Cause
 
 Root cause, once investigated.
+
+## Fix Decision
+
+<!-- ★ Fill this in after setting the type, before touching the code (agent-rules.md「Fix Decision」).
+     Fix now if rank is S or A, or type is 通常. Otherwise fill in 修正の影響 and ask the user. -->
+
+- **判定**: {即時修正 / ユーザー判断}
+- **ユーザー判断**: {修正する / 修正しない — 日付と理由。即時修正なら「不要」}
+
+### 修正の影響
+
+<!-- Required when the decision goes to the user. Delete only for an immediate fix. -->
+
+| 観点 | 内容 |
+|---|---|
+| 何を変えるか | |
+| 壊しうるもの | |
+| 触れる他の機能 | |
+| 工数の目安 | |
+| 直さない場合 | |
 
 ## Fix
 
