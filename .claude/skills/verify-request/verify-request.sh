@@ -161,7 +161,7 @@ if [ ${#WARN[@]} -gt 0 ]; then
   echo
 fi
 cat <<'EOT'
-埋めるときに確かめる 4 つ（agent-rules.md「Verification Loop」）:
+埋めるときに確かめる 4 つ（rules/verification.md）:
   1. 「測ったこと / 推測していること」を空にしない
   2. 各項目に対照を書く。無ければ「無し（確認のみ）」＋理由
   3. 0 を期待値に置いた項目を表に挙げ、1 になる場面か文字列の在処を添える

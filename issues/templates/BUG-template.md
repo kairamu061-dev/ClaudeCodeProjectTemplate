@@ -41,7 +41,7 @@ Root cause, once investigated.
 
 ## Fix Decision
 
-<!-- ★ Fill this in after setting the type, before touching the code (agent-rules.md「Fix Decision」).
+<!-- ★ Fill this in after setting the type, before touching the code (rules/bugs.md「Fix Decision」).
      Fix now if rank is S or A, or type is 通常. Otherwise fill in 修正の影響 and ask the user. -->
 
 - **判定**: {即時修正 / ユーザー判断}

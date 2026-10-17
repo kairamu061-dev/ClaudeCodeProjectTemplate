@@ -1,7 +1,7 @@
 # テストの線引き
 
 **自動で回るもの**と、**実機で人が確かめるもの**の境目をここに書く。
-`agent-rules.md`「Automated Tests」の記録。
+`rules/automated-tests.md` の記録。
 
 > この記入例は `template_samples/project_overview.md` と同じ題材
 > （個人・チーム向けのタスク管理 Web アプリ）。
