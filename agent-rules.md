@@ -84,7 +84,7 @@ Assigned from the **symptom** — what the user experiences. When in doubt, take
 |---|---|---|
 | **S** | Severe | Cannot proceed, crash, data corruption |
 | **A** | Operation is impaired | Rolled back by an error, an effect does not apply, a button does nothing |
-| **B** | Obviously wrong at a glance | A different effect is invoked, a blank screen appears, the layout breaks, a value is wrong |
+| **B** | Obviously wrong at a glance | A different effect is invoked, a broken texture reference shows a plain white polygon, the layout breaks, a value is wrong |
 | **C** | Minor | A transition takes longer than expected, the screen flickers, text overflows |
 
 ### Bug Type
