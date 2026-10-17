@@ -13,7 +13,8 @@ Translate all files matching the following patterns:
 
 | Pattern | Example |
 |---------|---------|
-| `*.md` in project root (excluding `CLAUDE.md`) | `agent-rules.md` → `_jp/agent-rules.md` |
+| `CLAUDE.md` | `CLAUDE.md` → `_jp/CLAUDE.md` |
+| `rules/*.md` | `rules/bugs.md` → `_jp/rules/bugs.md` |
 | `.claude/skills/*/SKILL.md` | `.claude/skills/add-feature/SKILL.md` → `_jp/skills/add-feature/SKILL.md` |
 
 When new agent files are added in the future, they will be picked up automatically as long as they match these patterns.
@@ -27,6 +28,7 @@ When new agent files are added in the future, they will be picked up automatical
   - Command names and skill names
   - YAML frontmatter keys (e.g. `name:`, `description:`, `allowed-tools:`)
   - Frontmatter values for `name` and `allowed-tools`
+  - `@` import lines in `CLAUDE.md` (e.g. `@rules/principles.md`)
 - Translate frontmatter values for `description` and `argument-hint`
 
 ## Steps
@@ -35,4 +37,6 @@ When new agent files are added in the future, they will be picked up automatical
 2. For each file, read the content
 3. Translate to Japanese following the rules above
 4. Write to the corresponding output path under `_jp/`
-5. Report which files were translated
+5. Use Glob to list `_jp/**/*.md` and find files whose source no longer exists
+   (do not read them — only compare paths)
+6. Report which files were translated, and list the orphaned `_jp/` files so the user can delete them
